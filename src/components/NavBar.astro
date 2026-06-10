@@ -24,10 +24,12 @@ const { currentPage = 'home' } = Astro.props;
 
     <ul class="hidden md:flex items-center gap-8 font-['Poppins'] text-label-md uppercase tracking-widest">
       {[
-        { href: '/#home', label: 'Home', id: 'home' },
-        { href: '/#about', label: 'About', id: 'about' },
-        { href: '/#projects', label: 'Projects', id: 'projects' },
-        { href: '/#contact', label: 'Contact', id: 'contact' },
+        { href: '/#home',         label: 'Home',         id: 'home' },
+        { href: '/#about',        label: 'About',        id: 'about' },
+        { href: '/#projects',     label: 'Projects',     id: 'projects' },
+        { href: '/#achievements', label: 'Achievements', id: 'achievements' },
+        { href: '/#education',    label: 'Education',    id: 'education' },
+        { href: '/#contact',      label: 'Contact',      id: 'contact' },
       ].map(({ href, label, id }) => (
         <li>
           <a href={href} class={`transition-colors ${currentPage === id ? 'text-primary' : 'text-secondary hover:text-primary'}`}>
@@ -61,10 +63,12 @@ const { currentPage = 'home' } = Astro.props;
   </div>
 
   <div id="mobile-menu" class="hidden md:hidden bg-surface border-b border-outline-variant px-margin-mobile py-6 space-y-4">
-    <a href="/#home" class="block font-label-md text-label-md uppercase tracking-widest text-primary font-bold">Home</a>
-    <a href="/#about" class="block font-label-md text-label-md uppercase tracking-widest text-secondary">About</a>
-    <a href="/#projects" class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Projects</a>
-    <a href="/#contact" class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Contact</a>
+    <a href="/#home"         class="block font-label-md text-label-md uppercase tracking-widest text-primary font-bold">Home</a>
+    <a href="/#about"        class="block font-label-md text-label-md uppercase tracking-widest text-secondary">About</a>
+    <a href="/#projects"     class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Projects</a>
+    <a href="/#achievements" class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Achievements</a>
+    <a href="/#education"    class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Education</a>
+    <a href="/#contact"      class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Contact</a>
     <a href="/resume.pdf" download class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Resume</a>
   </div>
 </nav>

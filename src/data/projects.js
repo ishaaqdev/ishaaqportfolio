@@ -33,7 +33,7 @@ export const projects = [
       "Training framework that prioritizes high-loss samples using sparse gradient updates, achieving substantial energy savings for edge and satellite deployments while trading a small amount of accuracy.",
     github: "https://github.com/ishaaqdev/Staged-Embarrassment-Learning-SEL/",
     live: "https://ishaaqdev.github.io/Staged-Embarrassment-Learning-SEL/",
-    liveLabel: "Research Page",
+    liveLabel: "Research",
     featured: true,
   },
   {
@@ -103,7 +103,7 @@ export const projects = [
       "Improved SEL with refined curriculum scheduling, broader model architecture compatibility, and updated benchmarks.",
     github: "https://github.com/ishaaqdev/Staged-Embarrassment-Learning",
     live: "https://ishaaqdev.github.io/Staged-Embarrassment-Learning/",
-    liveLabel: "Research Page",
+    liveLabel: "Research",
     featured: false,
   },
 ];
