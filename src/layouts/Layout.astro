@@ -9,7 +9,7 @@ const { title, description = "Mohammed Ishaaq — Portfolio" } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="light scroll-smooth">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -21,12 +21,6 @@ const { title, description = "Mohammed Ishaaq — Portfolio" } = Astro.props;
     <meta property="og:type" content="website" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <!-- Apply saved theme before paint to avoid flash -->
-    <script is:inline>
-      if (localStorage.getItem('theme') === 'dark') {
-        document.documentElement.classList.replace('light', 'dark');
-      }
-    </script>
   </head>
   <body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary">
 

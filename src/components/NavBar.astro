@@ -22,7 +22,7 @@ const { currentPage = 'home' } = Astro.props;
       </div>
     </div>
 
-    <ul class="hidden md:flex items-center gap-8 font-['Poppins'] text-label-md uppercase tracking-widest">
+    <ul class="hidden md:flex items-center gap-8 font-['Poppins'] text-xs uppercase tracking-widest">
       {[
         { href: '/#home',         label: 'Home',         id: 'home' },
         { href: '/#about',        label: 'About',        id: 'about' },
@@ -40,18 +40,6 @@ const { currentPage = 'home' } = Astro.props;
     </ul>
 
     <div class="hidden md:flex items-center gap-3">
-      <!-- Dark mode toggle: half-black / half-white circle -->
-      <button
-        id="theme-toggle"
-        aria-label="Toggle dark mode"
-        title="Toggle dark / light mode"
-        class="w-7 h-7 rounded-full border-2 border-primary overflow-hidden flex-shrink-0 hover:scale-110 transition-transform"
-      >
-        <span class="w-full h-full flex">
-          <span class="w-1/2 h-full bg-black dark-left"></span>
-          <span class="w-1/2 h-full bg-white dark-right border-l border-outline-variant"></span>
-        </span>
-      </button>
       <a href="/resume.pdf" download class="inline-flex items-center justify-center px-6 py-3 btn-brutalist font-[Poppins] text-label-md bg-primary text-on-primary hover:bg-surface hover:text-primary">
         Download Resume
       </a>
@@ -76,26 +64,5 @@ const { currentPage = 'home' } = Astro.props;
 <script>
   document.getElementById('mobile-toggle')?.addEventListener('click', () => {
     document.getElementById('mobile-menu')?.classList.toggle('hidden');
-  });
-
-  function applyThemeToIcon(isDark) {
-    const left  = document.querySelector('.dark-left')  as HTMLElement | null;
-    const right = document.querySelector('.dark-right') as HTMLElement | null;
-    if (!left || !right) return;
-    // In dark mode: invert the halves so it looks different
-    left.style.backgroundColor  = isDark ? '#ffffff' : '#000000';
-    right.style.backgroundColor = isDark ? '#000000' : '#ffffff';
-  }
-
-  // Apply icon state on load
-  applyThemeToIcon(document.documentElement.classList.contains('dark'));
-
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const html   = document.documentElement;
-    const isDark = html.classList.contains('dark');
-    html.classList.toggle('dark',  !isDark);
-    html.classList.toggle('light',  isDark);
-    localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    applyThemeToIcon(!isDark);
   });
 </script>

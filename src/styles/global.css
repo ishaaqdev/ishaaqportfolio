@@ -22,25 +22,6 @@
   --clr-outline-variant:           207 196 197;
 }
 
-/* ─── Dark mode ─── */
-html.dark {
-  --clr-primary:                   255 255 255;
-  --clr-on-primary:                0 0 0;
-  --clr-secondary:                 160 160 160;
-  --clr-on-secondary:              0 0 0;
-  --clr-surface:                   17 17 17;
-  --clr-on-surface:                242 240 240;
-  --clr-on-surface-variant:        192 190 190;
-  --clr-surface-container-lowest:  10 10 10;
-  --clr-surface-container-low:     26 26 26;
-  --clr-surface-container:         30 30 30;
-  --clr-surface-container-high:    37 37 37;
-  --clr-surface-container-highest: 45 45 45;
-  --clr-surface-bright:            30 30 30;
-  --clr-surface-dim:               13 13 13;
-  --clr-outline:                   102 102 102;
-  --clr-outline-variant:           51 51 51;
-}
 
 /* ─── Material icons ─── */
 .material-symbols-outlined {
