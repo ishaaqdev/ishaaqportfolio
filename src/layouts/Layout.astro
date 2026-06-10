@@ -1,0 +1,77 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "Mohammed Ishaaq — Portfolio" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="light scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Mohammed Ishaaq" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <!-- Apply saved theme before paint to avoid flash -->
+    <script is:inline>
+      if (localStorage.getItem('theme') === 'dark') {
+        document.documentElement.classList.replace('light', 'dark');
+      }
+    </script>
+  </head>
+  <body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary selection:text-on-primary">
+
+    <!-- Splash screen -->
+    <div id="splash" class="fixed inset-0 z-[200] bg-black flex flex-col items-center justify-center" aria-hidden="true">
+      <p class="font-[Poppins] text-white/40 text-label-sm uppercase tracking-[0.35em] mb-5">Portfolio 2026</p>
+      <div class="overflow-hidden">
+        <h1
+          id="splash-name"
+          class="font-[Poppins] font-bold text-white uppercase tracking-tight leading-none"
+          style="font-size: clamp(2.5rem, 8vw, 5.5rem); transform: translateY(100%);"
+        >
+          Mohammed Ishaaq
+        </h1>
+      </div>
+      <div class="mt-8 w-16 h-[2px] bg-white/20 overflow-hidden rounded-full">
+        <div id="splash-bar" class="h-full bg-white rounded-full" style="width:0"></div>
+      </div>
+    </div>
+
+    <slot />
+  </body>
+</html>
+
+<script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const splashName = document.getElementById('splash-name');
+    const splashBar  = document.getElementById('splash-bar');
+    const splash     = document.getElementById('splash');
+
+    requestAnimationFrame(() => {
+      if (splashName) {
+        splashName.style.transition = 'transform 0.75s cubic-bezier(0.16,1,0.3,1)';
+        splashName.style.transform  = 'translateY(0)';
+      }
+      if (splashBar) {
+        splashBar.style.transition = 'width 1.4s ease';
+        splashBar.style.width      = '100%';
+      }
+    });
+
+    setTimeout(() => {
+      if (splash) {
+        splash.style.transition = 'opacity 0.6s ease';
+        splash.style.opacity    = '0';
+        setTimeout(() => splash.remove(), 650);
+      }
+    }, 2000);
+  });
+</script>

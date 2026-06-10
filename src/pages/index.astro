@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import NavBar from '../components/NavBar.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import Skills from '../components/Skills.astro';
+import FeaturedProjects from '../components/FeaturedProjects.astro';
+import Achievements from '../components/Achievements.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Mohammed Ishaaq — Portfolio">
+  <NavBar currentPage="home" />
+  <main class="flex-grow w-full flex flex-col">
+    <Hero />
+    <About />
+    <Skills />
+    <FeaturedProjects />
+    <Achievements />
+    <Contact />
+  </main>
+  <Footer />
+</Layout>

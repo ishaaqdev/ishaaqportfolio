@@ -1,0 +1,39 @@
+IWM Reverse Vending Machine:
+GitHub Repo: https://github.com/ishaaqdev/IWM-Reverse-Vending-Machine
+live site: https://ishaaqdev.github.io/IWM-Reverse-Vending-Machine/
+
+OceanOS:
+GitHub Repo: https://github.com/ishaaqdev/OceanOS
+Live Site: https://ocean-os.vercel.app/#apps
+
+Recylo SIH(patent number: 482604-001):
+Github Repo: https://github.com/ishaaqdev/Recylo-SIH/
+live site: https://ishaaqdev.github.io/Recylo-SIH/
+
+FitQuest:
+GitHub Repo: https://github.com/ishaaqdev/FitQuest
+live site: fitquest.vercel.app
+
+SEL v1:
+github: https://github.com/ishaaqdev/Staged-Embarrassment-Learning-SEL/
+live site: https://ishaaqdev.github.io/Staged-Embarrassment-Learning-SEL/
+
+SEL v2:
+GitHub: https://github.com/ishaaqdev/Staged-Embarrassment-Learning
+live site: https://ishaaqdev.github.io/Staged-Embarrassment-Learning/
+
+Only Freinds:
+GitHub: https://github.com/ishaaqdev/OnlyFriends
+live site: https://ishaaqdev.github.io/OnlyFriends/ 
+
+I want you to read all th readmes and use it in the project description. 
+
+github: https://github.com/ishaaqdev
+linkedin: https://www.linkedin.com/in/ishaaq42/
+instagram: https://www.instagram.com/ishaaq.42/?hl=en
+email: ishaaq.tech@gmail.com
+
+Quote to add in about me section: "To see the boundaries of the possible, we must attempt the impossible." - Mehmed II
+
+
+

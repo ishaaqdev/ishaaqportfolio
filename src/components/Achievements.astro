@@ -1,0 +1,45 @@
+---
+const achievements = [
+  {
+    icon: "workspace_premium",
+    title: "Design Patent",
+    description: "Granted by the Government of India for the AI Household Waste Segregator design.",
+  },
+  {
+    icon: "emoji_events",
+    title: "Grand Finalist",
+    description:
+      "Smart India Hackathon (SIH) Grand Finalist, competing among top teams nationally with innovative tech solutions.",
+  },
+  {
+    icon: "payments",
+    title: "Funding Milestones",
+    description: "Secured seed funding and grants exceeding ₹1L for prototype development and research scaling.",
+  },
+  {
+    icon: "military_tech",
+    title: "JVTM Exhibition Prize Winner",
+    description:
+      "Awarded as the winner at the National-level engineering innovation exhibition for excellence in technical prototype demonstration.",
+  },
+];
+---
+
+<section id="achievements" class="w-full border-t border-outline-variant bg-surface">
+  <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-[120px]">
+    <div class="mb-12">
+      <h2 class="font-headline-lg text-headline-lg text-primary mb-6 uppercase tracking-tight">Achievements</h2>
+      <div class="w-16 h-2 bg-primary"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {achievements.map(({ icon, title, description }) => (
+        <div class="border-l-4 border-primary pl-6 py-2">
+          <span class="material-symbols-outlined text-4xl text-primary mb-4 block">{icon}</span>
+          <h3 class="font-headline-md text-headline-md text-primary mb-2">{title}</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant">{description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

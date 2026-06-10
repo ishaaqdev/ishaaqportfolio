@@ -1,0 +1,68 @@
+---
+const skillGroups = [
+  {
+    title: "Programming",
+    skills: [
+      { icon: "code", label: "TypeScript" },
+      { icon: "javascript", label: "JavaScript" },
+      { icon: "terminal", label: "Python" },
+      { icon: "integration_instructions", label: "C++" },
+      { icon: "html", label: "HTML / CSS" },
+    ],
+  },
+  {
+    title: "Frontend",
+    skills: [
+      { icon: "pentagon", label: "React" },
+      { icon: "frame_inspect", label: "Next.js" },
+      { icon: "devices", label: "Responsive UI" },
+      { icon: "animation", label: "CSS Animations" },
+    ],
+  },
+  {
+    title: "Backend",
+    skills: [
+      { icon: "database", label: "Node.js / Express.js" },
+      { icon: "storage", label: "MongoDB" },
+      { icon: "key", label: "JWT" },
+      { icon: "api", label: "RESTful APIs" },
+    ],
+  },
+  {
+    title: "Specialized",
+    skills: [
+      { icon: "memory", label: "Raspberry Pi / Arduino" },
+      { icon: "psychology", label: "TensorFlow / PyTorch" },
+      { icon: "settings_input_component", label: "Hardware Integration" },
+      { icon: "neurology", label: "Deep Learning (ResNet)" },
+    ],
+  },
+];
+---
+
+<section id="skills" class="w-full border-t border-outline-variant bg-surface">
+  <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-[120px]">
+    <div class="mb-12">
+      <h2 class="font-headline-lg text-headline-lg text-primary mb-6 uppercase tracking-tight">Technical Skills</h2>
+      <div class="w-16 h-2 bg-primary"></div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {skillGroups.map((group) => (
+        <div class="card-brutalist p-8">
+          <h3 class="font-headline-md text-headline-md text-primary mb-6 border-b-2 border-primary pb-2 inline-block">
+            {group.title}
+          </h3>
+          <ul class="space-y-4 font-body-md text-body-md text-on-surface-variant">
+            {group.skills.map(({ icon, label }) => (
+              <li class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary">{icon}</span>
+                {label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
