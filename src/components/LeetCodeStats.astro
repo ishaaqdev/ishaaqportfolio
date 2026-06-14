@@ -17,20 +17,6 @@
       <div class="border border-outline-variant h-44 animate-pulse bg-surface-container flex-1"></div>
     </div>
 
-    <!-- Heatmap (skeleton → replaced by JS) -->
-    <div class="border-2 border-primary overflow-hidden">
-      <div class="p-6 overflow-x-auto">
-        <div id="lc-heatmap">
-          <div class="w-full h-[120px] animate-pulse bg-surface-container"></div>
-        </div>
-      </div>
-      <div class="px-6 pb-5 flex items-center justify-end gap-1 text-on-surface-variant" style="font-size:11px;">
-        <span>Less</span>
-        <div id="lc-legend" class="flex gap-1 mx-2"></div>
-        <span>More</span>
-      </div>
-    </div>
-
     <div class="mt-6">
       <a
         href="https://leetcode.com/u/ishaaq42/"
@@ -49,31 +35,10 @@
 
 <script>
 (function () {
-  const CELL = 12, GAP = 3;
-  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
   function v(name) {
     return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   }
   function rgb(name) { return `rgb(${v(name)})`; }
-
-  const LEVEL_VARS = [
-    '--clr-surface-container',
-    '--clr-outline-variant',
-    '--clr-outline',
-    '--clr-secondary',
-    '--clr-primary',
-  ];
-  function cellColor(level) { return rgb(LEVEL_VARS[Math.min(level, 4)]); }
-
-  function toISO(d) { return d.toISOString().split('T')[0]; }
-
-  function getLevel(count, max) {
-    if (count === 0 || max === 0) return 0;
-    const r = count / max;
-    return r <= 0.25 ? 1 : r <= 0.5 ? 2 : r <= 0.75 ? 3 : 4;
-  }
 
   async function init() {
     const BASE = 'https://alfa-leetcode-api.onrender.com';
@@ -83,8 +48,6 @@
       setTimeout(() => ac.abort(), 25000);
       const opts = { signal: ac.signal };
 
-      // /profile has solved counts + totals per difficulty + ranking + submissionCalendar
-      // /calendar has streak + totalActiveDays + submissionCalendar
       const [profileRes, calRes] = await Promise.all([
         fetch(`${BASE}/ishaaq42/profile`, opts),
         fetch(`${BASE}/ishaaq42/calendar`, opts),
@@ -95,7 +58,6 @@
       const profile = await profileRes.json();
       const cal     = await calRes.json();
 
-      /* ── stats ─────────────────────────────────────────── */
       const total     = profile.totalSolved  ?? 0;
       const easy      = profile.easySolved   ?? 0;
       const med       = profile.mediumSolved ?? 0;
@@ -107,11 +69,11 @@
       const streak    = cal.streak           ?? 0;
       const activeDays= cal.totalActiveDays  ?? 0;
 
-      const SEP  = rgb('--clr-outline-variant');
-      const FG   = rgb('--clr-primary');
-      const MUT  = rgb('--clr-on-surface-variant');
-      const BG   = rgb('--clr-surface');
-      const SC   = rgb('--clr-surface-container');
+      const SEP = rgb('--clr-outline-variant');
+      const FG  = rgb('--clr-primary');
+      const MUT = rgb('--clr-on-surface-variant');
+      const BG  = rgb('--clr-surface');
+      const SC  = rgb('--clr-surface-container');
 
       const difficulties = [
         { label: 'Easy',   count: easy, total: totalEasy, rawVar: '--clr-secondary' },
@@ -152,86 +114,6 @@
           ${barsHtml}
         </div>`;
 
-      /* ── submission heatmap ────────────────────────────── */
-      // /calendar returns submissionCalendar as a plain object {timestamp: count}
-      const calRaw = cal.submissionCalendar || {};
-      const calMap = {};
-      Object.entries(calRaw).forEach(([ts, cnt]) => {
-        const d = toISO(new Date(Number(ts) * 1000));
-        calMap[d] = (calMap[d] || 0) + Number(cnt);
-      });
-      const maxCnt = Math.max(...Object.values(calMap), 1);
-
-      // 52 weeks ending this Saturday
-      const now    = new Date();
-      const endSat = new Date(now);
-      endSat.setDate(endSat.getDate() + (6 - endSat.getDay()));
-      const startSun = new Date(endSat);
-      startSun.setDate(startSun.getDate() - 52 * 7 + 1);
-      startSun.setDate(startSun.getDate() - startSun.getDay());
-
-      const weeks = [];
-      let week = [];
-      const iter = new Date(startSun);
-
-      while (iter <= endSat) {
-        const d   = toISO(iter);
-        const cnt = calMap[d] || 0;
-        week.push({ date: d, count: cnt, level: getLevel(cnt, maxCnt) });
-        if (iter.getDay() === 6) { weeks.push(week); week = []; }
-        iter.setDate(iter.getDate() + 1);
-      }
-      if (week.length) {
-        while (week.length < 7) week.push({ date: '', count: 0, level: 0 });
-        weeks.push(week);
-      }
-
-      const mPos = [];
-      let lastM = -1;
-      weeks.forEach((wk, wi) => {
-        if (!wk[0].date) return;
-        const dt = new Date(wk[0].date);
-        if (dt.getMonth() !== lastM && dt.getDate() <= 7) {
-          mPos.push({ x: wi * (CELL + GAP), text: MONTHS[dt.getMonth()] });
-          lastM = dt.getMonth();
-        }
-      });
-
-      const DLW = 28, MH = 18;
-      const W = DLW + weeks.length * (CELL + GAP);
-      const H = MH + 7 * CELL + 6 * GAP;
-      const DIM = rgb('--clr-on-surface-variant');
-
-      let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;overflow:visible;">`;
-
-      mPos.forEach(({ x, text }) => {
-        svg += `<text x="${DLW + x}" y="12" font-size="10" fill="${DIM}" font-family="system-ui,sans-serif">${text}</text>`;
-      });
-
-      [1, 3, 5].forEach(di => {
-        const y = MH + di * (CELL + GAP) + CELL - 2;
-        svg += `<text x="0" y="${y}" font-size="9" fill="${DIM}" font-family="system-ui,sans-serif">${DAYS[di].slice(0, 3)}</text>`;
-      });
-
-      weeks.forEach((wk, wi) => {
-        wk.forEach((day, di) => {
-          if (!day.date) return;
-          const x    = DLW + wi * (CELL + GAP);
-          const y    = MH + di * (CELL + GAP);
-          const fill = cellColor(day.level);
-          svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" rx="2" fill="${fill}">`;
-          svg += `<title>${day.date}: ${day.count} submission${day.count !== 1 ? 's' : ''}</title>`;
-          svg += `</rect>`;
-        });
-      });
-
-      svg += '</svg>';
-      document.getElementById('lc-heatmap').innerHTML = svg;
-
-      document.getElementById('lc-legend').innerHTML = [0, 1, 2, 3, 4]
-        .map(l => `<div style="width:12px;height:12px;border-radius:2px;background:${cellColor(l)};flex-shrink:0;"></div>`)
-        .join('');
-
     } catch (err) {
       console.error('LeetCode API error:', err);
       const MUT = rgb('--clr-on-surface-variant');
@@ -240,7 +122,6 @@
           Could not load LeetCode stats — visit
           <a href="https://leetcode.com/u/ishaaq42/" style="text-decoration:underline;" target="_blank" rel="noopener">leetcode.com/u/ishaaq42/</a>
         </div>`;
-      document.getElementById('lc-heatmap').innerHTML = '';
     }
   }
 
