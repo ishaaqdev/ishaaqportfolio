@@ -78,7 +78,7 @@
 
       const res = await fetch(
         'https://github-contributions-api.jogruber.de/v4/ishaaqdev?y=last',
-        { signal: ac.signal }
+        { signal: ac.signal, cache: 'no-store' }
       );
       if (!res.ok) throw new Error(String(res.status));
       const { contributions: cs } = await res.json();
