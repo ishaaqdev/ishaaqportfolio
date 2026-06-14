@@ -76,26 +76,36 @@
   }
 
   async function init() {
+    const BASE = 'https://alfa-leetcode-api.onrender.com';
+
     try {
       const ac = new AbortController();
-      setTimeout(() => ac.abort(), 15000);
+      setTimeout(() => ac.abort(), 25000);
+      const opts = { signal: ac.signal };
 
-      const res = await fetch('https://leetcode-stats-api.herokuapp.com/ishaaq42', {
-        signal: ac.signal,
-      });
-      if (!res.ok) throw new Error(String(res.status));
-      const data = await res.json();
-      if (data.status === 'error') throw new Error(data.message || 'API error');
+      // /profile has solved counts + totals per difficulty + ranking + submissionCalendar
+      // /calendar has streak + totalActiveDays + submissionCalendar
+      const [profileRes, calRes] = await Promise.all([
+        fetch(`${BASE}/ishaaq42/profile`, opts),
+        fetch(`${BASE}/ishaaq42/calendar`, opts),
+      ]);
+
+      if (!profileRes.ok || !calRes.ok) throw new Error('API error');
+
+      const profile = await profileRes.json();
+      const cal     = await calRes.json();
 
       /* ── stats ─────────────────────────────────────────── */
-      const total     = data.totalSolved    ?? 0;
-      const easy      = data.easySolved     ?? 0;
-      const med       = data.mediumSolved   ?? 0;
-      const hard      = data.hardSolved     ?? 0;
-      const totalEasy = data.totalEasy      ?? 0;
-      const totalMed  = data.totalMedium    ?? 0;
-      const totalHard = data.totalHard      ?? 0;
-      const ranking   = data.ranking        ?? null;
+      const total     = profile.totalSolved  ?? 0;
+      const easy      = profile.easySolved   ?? 0;
+      const med       = profile.mediumSolved ?? 0;
+      const hard      = profile.hardSolved   ?? 0;
+      const totalEasy = profile.totalEasy    ?? 0;
+      const totalMed  = profile.totalMedium  ?? 0;
+      const totalHard = profile.totalHard    ?? 0;
+      const ranking   = profile.ranking      ?? null;
+      const streak    = cal.streak           ?? 0;
+      const activeDays= cal.totalActiveDays  ?? 0;
 
       const SEP  = rgb('--clr-outline-variant');
       const FG   = rgb('--clr-primary');
@@ -124,25 +134,27 @@
           </div>`;
       }).join('');
 
-      const rankHtml = ranking
-        ? `<div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:${MUT};margin-top:8px;">Rank #${Number(ranking).toLocaleString()}</div>`
-        : '';
+      const metaRows = [
+        ranking    ? `Rank #${Number(ranking).toLocaleString()}` : null,
+        streak     ? `${streak}-day streak` : null,
+        activeDays ? `${activeDays} active days` : null,
+      ].filter(Boolean).map(t =>
+        `<div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:${MUT};margin-top:6px;">${t}</div>`
+      ).join('');
 
       document.getElementById('lc-stats').innerHTML = `
         <div style="border:1px solid ${SEP};padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;min-width:180px;background:${BG};">
           <div style="font-size:52px;font-weight:700;color:${FG};line-height:1;">${total}</div>
-          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:${MUT};margin-top:10px;text-align:center;">Problems<br>Solved</div>
-          ${rankHtml}
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:${MUT};margin-top:10px;text-align:center;">Problems Solved</div>
+          ${metaRows}
         </div>
         <div style="border:1px solid ${SEP};padding:24px 28px;flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:16px;background:${BG};">
           ${barsHtml}
         </div>`;
 
       /* ── submission heatmap ────────────────────────────── */
-      // submissionCalendar may be an object or a JSON string depending on API version
-      const calRaw = typeof data.submissionCalendar === 'string'
-        ? JSON.parse(data.submissionCalendar || '{}')
-        : (data.submissionCalendar || {});
+      // /calendar returns submissionCalendar as a plain object {timestamp: count}
+      const calRaw = cal.submissionCalendar || {};
       const calMap = {};
       Object.entries(calRaw).forEach(([ts, cnt]) => {
         const d = toISO(new Date(Number(ts) * 1000));
