@@ -76,29 +76,26 @@
   }
 
   async function init() {
-    const BASE = 'https://alfa-leetcode-api.onrender.com';
-
     try {
       const ac = new AbortController();
-      setTimeout(() => ac.abort(), 30000);
-      const opts = { signal: ac.signal };
+      setTimeout(() => ac.abort(), 15000);
 
-      const [solvedRes, heatRes] = await Promise.all([
-        fetch(`${BASE}/ishaaq42/solved`, opts),
-        fetch(`${BASE}/ishaaq42/heatMap`, opts),
-      ]);
-
-      if (!solvedRes.ok || !heatRes.ok) throw new Error('API error');
-
-      const solved   = await solvedRes.json();
-      const heatData = await heatRes.json();
+      const res = await fetch('https://leetcode-stats-api.herokuapp.com/ishaaq42', {
+        signal: ac.signal,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      const data = await res.json();
+      if (data.status === 'error') throw new Error(data.message || 'API error');
 
       /* ── stats ─────────────────────────────────────────── */
-      const total = solved.solvedProblem ?? 0;
-      const easy  = solved.easySolved    ?? 0;
-      const med   = solved.mediumSolved  ?? 0;
-      const hard  = solved.hardSolved    ?? 0;
-      const maxD  = Math.max(easy, med, hard, 1);
+      const total     = data.totalSolved    ?? 0;
+      const easy      = data.easySolved     ?? 0;
+      const med       = data.mediumSolved   ?? 0;
+      const hard      = data.hardSolved     ?? 0;
+      const totalEasy = data.totalEasy      ?? 0;
+      const totalMed  = data.totalMedium    ?? 0;
+      const totalHard = data.totalHard      ?? 0;
+      const ranking   = data.ranking        ?? null;
 
       const SEP  = rgb('--clr-outline-variant');
       const FG   = rgb('--clr-primary');
@@ -107,19 +104,19 @@
       const SC   = rgb('--clr-surface-container');
 
       const difficulties = [
-        { label: 'Easy',   count: easy, rawVar: '--clr-secondary' },
-        { label: 'Medium', count: med,  rawVar: '--clr-on-surface' },
-        { label: 'Hard',   count: hard, rawVar: '--clr-primary' },
+        { label: 'Easy',   count: easy, total: totalEasy, rawVar: '--clr-secondary' },
+        { label: 'Medium', count: med,  total: totalMed,  rawVar: '--clr-on-surface' },
+        { label: 'Hard',   count: hard, total: totalHard, rawVar: '--clr-primary' },
       ];
 
-      const barsHtml = difficulties.map(({ label, count, rawVar }) => {
-        const pct = ((count / maxD) * 100).toFixed(1);
+      const barsHtml = difficulties.map(({ label, count, total: tot, rawVar }) => {
+        const pct = tot > 0 ? ((count / tot) * 100).toFixed(1) : '0';
         const barColor = `rgb(${v(rawVar)})`;
         return `
           <div>
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
               <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${barColor};">${label}</span>
-              <span style="font-size:12px;color:${MUT};">${count} solved</span>
+              <span style="font-size:12px;color:${MUT};">${count}${tot ? ` / ${tot}` : ''}</span>
             </div>
             <div style="height:5px;background:${SC};border:1px solid ${SEP};">
               <div style="height:100%;width:${pct}%;background:${barColor};"></div>
@@ -127,17 +124,25 @@
           </div>`;
       }).join('');
 
+      const rankHtml = ranking
+        ? `<div style="font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:${MUT};margin-top:8px;">Rank #${Number(ranking).toLocaleString()}</div>`
+        : '';
+
       document.getElementById('lc-stats').innerHTML = `
         <div style="border:1px solid ${SEP};padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;min-width:180px;background:${BG};">
           <div style="font-size:52px;font-weight:700;color:${FG};line-height:1;">${total}</div>
           <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:${MUT};margin-top:10px;text-align:center;">Problems<br>Solved</div>
+          ${rankHtml}
         </div>
         <div style="border:1px solid ${SEP};padding:24px 28px;flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:16px;background:${BG};">
           ${barsHtml}
         </div>`;
 
       /* ── submission heatmap ────────────────────────────── */
-      const calRaw = JSON.parse(heatData.submissionCalendar || '{}');
+      // submissionCalendar may be an object or a JSON string depending on API version
+      const calRaw = typeof data.submissionCalendar === 'string'
+        ? JSON.parse(data.submissionCalendar || '{}')
+        : (data.submissionCalendar || {});
       const calMap = {};
       Object.entries(calRaw).forEach(([ts, cnt]) => {
         const d = toISO(new Date(Number(ts) * 1000));
