@@ -1,0 +1,232 @@
+---
+// All data fetched client-side
+---
+
+<section id="leetcode" class="w-full border-t border-outline-variant bg-surface-container-lowest">
+  <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-[120px]">
+
+    <div class="mb-12">
+      <p class="font-[Poppins] text-xs uppercase tracking-widest text-secondary mb-3">Problem Solving</p>
+      <h2 class="font-headline-lg text-headline-lg text-primary mb-6 uppercase tracking-tight">LeetCode Progress</h2>
+      <div class="w-16 h-2 bg-primary"></div>
+    </div>
+
+    <!-- Stats (skeleton → replaced by JS) -->
+    <div id="lc-stats" class="flex flex-col md:flex-row gap-6 mb-10">
+      <div class="border border-outline-variant h-44 animate-pulse bg-surface-container" style="min-width:180px;flex-shrink:0;"></div>
+      <div class="border border-outline-variant h-44 animate-pulse bg-surface-container flex-1"></div>
+    </div>
+
+    <!-- Heatmap (skeleton → replaced by JS) -->
+    <div class="border-2 border-primary overflow-hidden">
+      <div class="p-6 overflow-x-auto">
+        <div id="lc-heatmap">
+          <div class="w-full h-[120px] animate-pulse bg-surface-container"></div>
+        </div>
+      </div>
+      <div class="px-6 pb-5 flex items-center justify-end gap-1 text-on-surface-variant" style="font-size:11px;">
+        <span>Less</span>
+        <div id="lc-legend" class="flex gap-1 mx-2"></div>
+        <span>More</span>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <a
+        href="https://leetcode.com/u/ishaaq42/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-brutalist inline-flex items-center gap-2 px-5 py-2.5 font-[Poppins] text-xs uppercase tracking-widest text-primary"
+      >
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125.513 5.527 5.527 0 0 0 .062 2.362 5.83 5.83 0 0 0 .349 1.017 5.938 5.938 0 0 0 1.271 1.818l4.277 4.193.039.038c2.248 2.165 5.852 2.133 8.063-.074l2.396-2.392c.54-.54.54-1.414.003-1.955a1.378 1.378 0 0 0-1.951-.003l-2.396 2.392a3.021 3.021 0 0 1-4.205.038l-.02-.019-4.276-4.193c-.652-.64-.972-1.469-.948-2.263a2.68 2.68 0 0 1 .066-.523 2.545 2.545 0 0 1 .619-1.164L9.13 8.114c1.058-1.134 3.204-1.27 4.43-.278l3.501 2.831c.593.48 1.461.387 1.94-.207a1.384 1.384 0 0 0-.207-1.943l-3.5-2.831c-.8-.647-1.766-1.045-2.774-1.202l2.015-2.158A1.384 1.384 0 0 0 13.483 0zm-2.866 12.815a1.38 1.38 0 0 0-1.38 1.382 1.38 1.38 0 0 0 1.38 1.382H20.79a1.38 1.38 0 0 0 1.38-1.382 1.38 1.38 0 0 0-1.38-1.382z"/>
+        </svg>
+        View on LeetCode
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  const CELL = 12, GAP = 3;
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  function v(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  }
+  function rgb(name) { return `rgb(${v(name)})`; }
+
+  const LEVEL_VARS = [
+    '--clr-surface-container',
+    '--clr-outline-variant',
+    '--clr-outline',
+    '--clr-secondary',
+    '--clr-primary',
+  ];
+  function cellColor(level) { return rgb(LEVEL_VARS[Math.min(level, 4)]); }
+
+  function toISO(d) { return d.toISOString().split('T')[0]; }
+
+  function getLevel(count, max) {
+    if (count === 0 || max === 0) return 0;
+    const r = count / max;
+    return r <= 0.25 ? 1 : r <= 0.5 ? 2 : r <= 0.75 ? 3 : 4;
+  }
+
+  async function init() {
+    const BASE = 'https://alfa-leetcode-api.onrender.com';
+
+    try {
+      const ac = new AbortController();
+      setTimeout(() => ac.abort(), 30000);
+      const opts = { signal: ac.signal };
+
+      const [solvedRes, heatRes] = await Promise.all([
+        fetch(`${BASE}/ishaaq42/solved`, opts),
+        fetch(`${BASE}/ishaaq42/heatMap`, opts),
+      ]);
+
+      if (!solvedRes.ok || !heatRes.ok) throw new Error('API error');
+
+      const solved   = await solvedRes.json();
+      const heatData = await heatRes.json();
+
+      /* ── stats ─────────────────────────────────────────── */
+      const total = solved.solvedProblem ?? 0;
+      const easy  = solved.easySolved    ?? 0;
+      const med   = solved.mediumSolved  ?? 0;
+      const hard  = solved.hardSolved    ?? 0;
+      const maxD  = Math.max(easy, med, hard, 1);
+
+      const SEP  = rgb('--clr-outline-variant');
+      const FG   = rgb('--clr-primary');
+      const MUT  = rgb('--clr-on-surface-variant');
+      const BG   = rgb('--clr-surface');
+      const SC   = rgb('--clr-surface-container');
+
+      const difficulties = [
+        { label: 'Easy',   count: easy, rawVar: '--clr-secondary' },
+        { label: 'Medium', count: med,  rawVar: '--clr-on-surface' },
+        { label: 'Hard',   count: hard, rawVar: '--clr-primary' },
+      ];
+
+      const barsHtml = difficulties.map(({ label, count, rawVar }) => {
+        const pct = ((count / maxD) * 100).toFixed(1);
+        const barColor = `rgb(${v(rawVar)})`;
+        return `
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:${barColor};">${label}</span>
+              <span style="font-size:12px;color:${MUT};">${count} solved</span>
+            </div>
+            <div style="height:5px;background:${SC};border:1px solid ${SEP};">
+              <div style="height:100%;width:${pct}%;background:${barColor};"></div>
+            </div>
+          </div>`;
+      }).join('');
+
+      document.getElementById('lc-stats').innerHTML = `
+        <div style="border:1px solid ${SEP};padding:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;min-width:180px;background:${BG};">
+          <div style="font-size:52px;font-weight:700;color:${FG};line-height:1;">${total}</div>
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:${MUT};margin-top:10px;text-align:center;">Problems<br>Solved</div>
+        </div>
+        <div style="border:1px solid ${SEP};padding:24px 28px;flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:16px;background:${BG};">
+          ${barsHtml}
+        </div>`;
+
+      /* ── submission heatmap ────────────────────────────── */
+      const calRaw = JSON.parse(heatData.submissionCalendar || '{}');
+      const calMap = {};
+      Object.entries(calRaw).forEach(([ts, cnt]) => {
+        const d = toISO(new Date(Number(ts) * 1000));
+        calMap[d] = (calMap[d] || 0) + Number(cnt);
+      });
+      const maxCnt = Math.max(...Object.values(calMap), 1);
+
+      // 52 weeks ending this Saturday
+      const now    = new Date();
+      const endSat = new Date(now);
+      endSat.setDate(endSat.getDate() + (6 - endSat.getDay()));
+      const startSun = new Date(endSat);
+      startSun.setDate(startSun.getDate() - 52 * 7 + 1);
+      startSun.setDate(startSun.getDate() - startSun.getDay());
+
+      const weeks = [];
+      let week = [];
+      const iter = new Date(startSun);
+
+      while (iter <= endSat) {
+        const d   = toISO(iter);
+        const cnt = calMap[d] || 0;
+        week.push({ date: d, count: cnt, level: getLevel(cnt, maxCnt) });
+        if (iter.getDay() === 6) { weeks.push(week); week = []; }
+        iter.setDate(iter.getDate() + 1);
+      }
+      if (week.length) {
+        while (week.length < 7) week.push({ date: '', count: 0, level: 0 });
+        weeks.push(week);
+      }
+
+      const mPos = [];
+      let lastM = -1;
+      weeks.forEach((wk, wi) => {
+        if (!wk[0].date) return;
+        const dt = new Date(wk[0].date);
+        if (dt.getMonth() !== lastM && dt.getDate() <= 7) {
+          mPos.push({ x: wi * (CELL + GAP), text: MONTHS[dt.getMonth()] });
+          lastM = dt.getMonth();
+        }
+      });
+
+      const DLW = 28, MH = 18;
+      const W = DLW + weeks.length * (CELL + GAP);
+      const H = MH + 7 * CELL + 6 * GAP;
+      const DIM = rgb('--clr-on-surface-variant');
+
+      let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" style="display:block;overflow:visible;">`;
+
+      mPos.forEach(({ x, text }) => {
+        svg += `<text x="${DLW + x}" y="12" font-size="10" fill="${DIM}" font-family="system-ui,sans-serif">${text}</text>`;
+      });
+
+      [1, 3, 5].forEach(di => {
+        const y = MH + di * (CELL + GAP) + CELL - 2;
+        svg += `<text x="0" y="${y}" font-size="9" fill="${DIM}" font-family="system-ui,sans-serif">${DAYS[di].slice(0, 3)}</text>`;
+      });
+
+      weeks.forEach((wk, wi) => {
+        wk.forEach((day, di) => {
+          if (!day.date) return;
+          const x    = DLW + wi * (CELL + GAP);
+          const y    = MH + di * (CELL + GAP);
+          const fill = cellColor(day.level);
+          svg += `<rect x="${x}" y="${y}" width="${CELL}" height="${CELL}" rx="2" fill="${fill}">`;
+          svg += `<title>${day.date}: ${day.count} submission${day.count !== 1 ? 's' : ''}</title>`;
+          svg += `</rect>`;
+        });
+      });
+
+      svg += '</svg>';
+      document.getElementById('lc-heatmap').innerHTML = svg;
+
+      document.getElementById('lc-legend').innerHTML = [0, 1, 2, 3, 4]
+        .map(l => `<div style="width:12px;height:12px;border-radius:2px;background:${cellColor(l)};flex-shrink:0;"></div>`)
+        .join('');
+
+    } catch (err) {
+      console.error('LeetCode API error:', err);
+      const MUT = rgb('--clr-on-surface-variant');
+      document.getElementById('lc-stats').innerHTML = `
+        <div style="flex:1;padding:16px;text-align:center;color:${MUT};font-size:14px;">
+          Could not load LeetCode stats — visit
+          <a href="https://leetcode.com/u/ishaaq42/" style="text-decoration:underline;" target="_blank" rel="noopener">leetcode.com/u/ishaaq42/</a>
+        </div>`;
+      document.getElementById('lc-heatmap').innerHTML = '';
+    }
+  }
+
+  init();
+})();
+</script>
