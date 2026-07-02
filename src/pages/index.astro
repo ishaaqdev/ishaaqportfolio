@@ -1,8 +1,9 @@
----
+﻿---
 import Layout from '../layouts/Layout.astro';
 import NavBar from '../components/NavBar.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
+import Experience from '../components/Experience.astro';
 import Skills from '../components/Skills.astro';
 import FeaturedProjects from '../components/FeaturedProjects.astro';
 import GitHubActivity from '../components/GitHubActivity.astro';
@@ -14,11 +15,12 @@ import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="Mohammed Ishaaq — Portfolio">
+<Layout title="Mohammed Ishaaq â€” Portfolio">
   <NavBar currentPage="home" />
   <main class="flex-grow w-full flex flex-col">
     <Hero />
     <About />
+    <Experience />
     <Skills />
     <FeaturedProjects />
     <GitHubActivity />
@@ -30,3 +32,4 @@ import Footer from '../components/Footer.astro';
   </main>
   <Footer />
 </Layout>
+

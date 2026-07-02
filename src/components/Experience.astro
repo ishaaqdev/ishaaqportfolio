@@ -1,0 +1,61 @@
+---
+const experiences = [
+  {
+    role: "Artificial Intelligence Engineer",
+    company: "Stellaria",
+    type: "Internship",
+    period: "Jun 2026 – Present",
+    location: "Abu Dhabi, UAE · Remote",
+    description:
+      "Building an automated AI pipeline that transforms geospatial and thermal mapping data into immersive 3D digital environments. Leveraging vision AI to reconstruct flat, real-world datasets into high-fidelity 3D formats ready for interactive web platforms — turning hours of manual engineering into a scalable, automated process.",
+    current: true,
+  },
+  {
+    role: "Software Lead",
+    company: "BGSCET Incubation Centre",
+    type: "Self-employed",
+    period: "Apr 2024 – Jun 2026",
+    location: "Bengaluru, India · Hybrid",
+    description:
+      "Led software architecture for an incubated sustainability startup. Engineered computer vision pipelines and optimised machine learning models for real-time edge deployment. Guided a 4-member team and secured ₹1L+ in funding.",
+    current: false,
+  },
+];
+---
+
+<section id="experience" class="w-full border-t border-outline-variant bg-surface">
+  <div class="max-w-[1200px] mx-auto px-margin-mobile md:px-margin-desktop py-stack-lg md:py-[120px]">
+    <div class="mb-12">
+      <h2 class="font-headline-lg text-headline-lg text-primary mb-6 uppercase tracking-tight">Experience</h2>
+      <div class="w-16 h-2 bg-primary"></div>
+    </div>
+
+    <div class="flex flex-col divide-y divide-outline-variant border-t border-outline-variant">
+      {experiences.map((exp) => (
+        <div class="py-10 flex flex-col md:flex-row gap-6 md:gap-12">
+          <!-- Left: meta -->
+          <div class="md:w-56 flex-shrink-0 flex flex-col gap-1">
+            <span class="font-[Poppins] text-xs uppercase tracking-widest text-secondary">{exp.period}</span>
+            <span class="font-[Poppins] text-xs uppercase tracking-widest text-secondary">{exp.location}</span>
+            {exp.current && (
+              <span class="inline-flex items-center gap-1.5 mt-2 w-fit">
+                <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                <span class="font-[Poppins] text-xs uppercase tracking-widest text-primary">Current</span>
+              </span>
+            )}
+          </div>
+
+          <!-- Right: content -->
+          <div class="flex-1">
+            <div class="flex flex-wrap items-baseline gap-3 mb-1">
+              <h3 class="font-headline-md text-headline-md text-primary">{exp.role}</h3>
+              <span class="font-[Poppins] text-xs uppercase tracking-widest text-secondary border border-outline-variant px-2 py-0.5">{exp.type}</span>
+            </div>
+            <p class="font-body-md text-body-md text-secondary mb-4 uppercase tracking-wide text-xs font-[Poppins]">{exp.company}</p>
+            <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">{exp.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

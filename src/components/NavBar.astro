@@ -1,4 +1,4 @@
----
+﻿---
 interface Props {
   currentPage?: string;
 }
@@ -26,6 +26,7 @@ const { currentPage = 'home' } = Astro.props;
       {[
         { href: '/#home',         label: 'Home',         id: 'home' },
         { href: '/#about',        label: 'About',        id: 'about' },
+        { href: '/#experience',   label: 'Experience',   id: 'experience' },
         { href: '/#projects',     label: 'Projects',     id: 'projects' },
         { href: '/#building',     label: 'Building',     id: 'building' },
         { href: '/#achievements', label: 'Achievements', id: 'achievements' },
@@ -54,6 +55,7 @@ const { currentPage = 'home' } = Astro.props;
   <div id="mobile-menu" class="hidden md:hidden bg-surface border-b border-outline-variant px-margin-mobile py-6 space-y-4">
     <a href="/#home"         class="block font-label-md text-label-md uppercase tracking-widest text-primary font-bold">Home</a>
     <a href="/#about"        class="block font-label-md text-label-md uppercase tracking-widest text-secondary">About</a>
+    <a href="/#experience"    class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Experience</a>
     <a href="/#projects"     class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Projects</a>
     <a href="/#building"     class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Building</a>
     <a href="/#achievements" class="block font-label-md text-label-md uppercase tracking-widest text-secondary">Achievements</a>
@@ -68,3 +70,4 @@ const { currentPage = 'home' } = Astro.props;
     document.getElementById('mobile-menu')?.classList.toggle('hidden');
   });
 </script>
+
